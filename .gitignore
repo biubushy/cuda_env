@@ -1,0 +1,201 @@
+# ========================
+# CUDA容器环境 - Git忽略规则
+# ========================
+
+banner.txt
+
+# ============ 容器运行时数据 ============
+
+# 容器信息文件（包含敏感信息：密码、端口等）
+containers/*.txt
+
+# 工作目录配置（包含本地路径信息）
+.workspace_config
+
+# ============ 用户数据与配置 ============
+
+# 批量创建配置文件（可能包含密码）
+batch_config.txt
+batch_config*.txt
+!batch_config.example.txt
+
+# 备份文件
+*.backup
+*.bak
+backups/
+backup_*/
+
+# 临时配置文件
+*.tmp
+*.temp
+.env
+.env.local
+
+# ============ Docker相关 ============
+
+# Docker卷挂载目录
+workspace/
+volumes/
+data/
+
+# Docker构建缓存
+.dockerignore.build
+
+# ============ 日志文件 ============
+
+# 所有日志文件
+*.log
+logs/
+*.out
+
+# Nohup输出
+nohup.out
+
+# ============ 系统与编辑器临时文件 ============
+
+# Vim
+*.swp
+*.swo
+*~
+.*.swp
+.*.swo
+
+# Emacs
+\#*\#
+.\#*
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ============ OS相关 ============
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+.directory
+.Trash-*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ============ 脚本运行产物 ============
+
+# Shell脚本临时文件
+*.pid
+*.sock
+
+# Python缓存（如果有Python辅助脚本）
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# ============ 压缩与归档文件 ============
+
+# 归档文件（保留必需的oh-my-zsh-pkg.tar.gz）
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.rar
+*.7z
+!zsh-scripts/oh-my-zsh-pkg.tar.gz
+
+# ============ 测试与开发 ============
+
+# 测试输出
+test/
+tests/
+test_*/
+*.test
+
+# 开发笔记
+notes.txt
+TODO.txt
+NOTES.md
+
+# ============ 敏感信息 ============
+
+# SSH密钥
+*.pem
+*.key
+*.pub
+id_rsa*
+id_ed25519*
+
+# 证书文件
+*.crt
+*.cer
+*.p12
+
+# 密码文件
+passwords.txt
+secrets.txt
+credentials.txt
+
+# ============ 用户自定义 ============
+
+# 个人脚本和配置
+local/
+custom/
+my_*/
+personal/
+
+# 实验性功能
+experimental/
+poc/
+
+# ============ 其他 ============
+
+# Node modules（如果使用node工具）
+node_modules/
+
+# Git相关
+*.orig
+*.rej
+
+# 补丁文件
+*.patch
+*.diff
+
+# Core dumps
+core.*
+*.core
+
+# ========================
+# 项目特定规则
+# ========================
+
+# 保留目录结构，忽略内容
+containers/*
+!containers/.gitkeep
+
+# 用户工作空间（如果在项目目录下）
+workspace_*/
+user_*/
+cuda-*/
+
+# 镜像导出文件
+*.tar.bak
+docker-image-*.tar
+
+# 性能测试结果
+benchmark/
+performance/
+

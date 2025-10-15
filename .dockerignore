@@ -1,0 +1,24 @@
+# Git相关
+.git
+.gitignore
+
+# 文档
+README.md
+QUICKSTART.md
+*.md
+
+# 脚本
+*.sh
+
+# 用户数据
+workspaces/
+containers/
+
+# 配置文件
+.workspace_config
+
+# 临时文件
+*.log
+*.tmp
+.DS_Store
+

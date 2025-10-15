@@ -1,0 +1,23 @@
+
+-----------------------------
+【欢迎使用星蕴服务器】
+-----------------------------
+【须知】
+
+- 须知内容
+-----------------------------
+【规章】
+
+- 仅规章内容
+-----------------------------
+【特性】
+
+- 特性内容
+-----------------------------
+【用户信息】
+
+- 用户名: ${CONTAINER_USERNAME}
+- SSH端口: ${CONTAINER_SSH_PORT}
+- Code-server地址: http://${CONTAINER_HOST_IP}:${CONTAINER_CODESERVER_PORT}
+- Syncthing地址: http://${CONTAINER_HOST_IP}:${CONTAINER_CODESERVER_PORT}/proxy/${CONTAINER_SYNCTHING_PORT}/
+-----------------------------
