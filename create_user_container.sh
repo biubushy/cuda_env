@@ -77,31 +77,68 @@ save_base_workspace() {
     echo "$BASE_WORKSPACE" > "$CONFIG_FILE"
 }
 
+# 选择Ubuntu版本
+select_ubuntu_version() {
+    echo ""
+    echo "========================================="
+    echo "     选择Ubuntu版本"
+    echo "========================================="
+    echo "1) Ubuntu 22.04 (使用 Dockerfile)"
+    echo "2) Ubuntu 24.04 (使用 Dockerfile.ubuntu24.04)"
+    echo ""
+    
+    while true; do
+        read -p "请选择Ubuntu版本 (1/2，默认1): " version_choice
+        
+        if [ -z "$version_choice" ]; then
+            version_choice="1"
+        fi
+        
+        case $version_choice in
+            1)
+                UBUNTU_VERSION="22.04"
+                DOCKERFILE_PATH="Dockerfile"
+                IMAGE_TAG="cuda-env:12.8-ubuntu22.04"
+                print_success "已选择: Ubuntu 22.04"
+                break
+                ;;
+            2)
+                UBUNTU_VERSION="24.04"
+                DOCKERFILE_PATH="Dockerfile.ubuntu24.04"
+                IMAGE_TAG="cuda-env:12.8-ubuntu24.04"
+                print_success "已选择: Ubuntu 24.04"
+                break
+                ;;
+            *)
+                print_error "无效选择，请输入1或2"
+                ;;
+        esac
+    done
+}
+
 # 构建基础镜像
 build_base_image() {
-    local image_name="cuda-env:12.8"
-    
-    if docker images | grep -q "cuda-env.*12.8"; then
-        print_info "基础镜像已存在: $image_name"
+    if docker images | grep -q "cuda-env.*12.8-ubuntu${UBUNTU_VERSION}"; then
+        print_info "基础镜像已存在: $IMAGE_TAG"
         read -p "是否重新构建？(y/n，默认n): " rebuild
         if [ "$rebuild" != "y" ]; then
             return 0
         fi
     fi
     
-    print_info "开始构建CUDA基础镜像: $image_name"
+    print_info "开始构建CUDA基础镜像: $IMAGE_TAG"
     
-    if [ ! -f "Dockerfile" ]; then
-        print_error "Dockerfile不存在，请确保在正确的目录下运行此脚本"
+    if [ ! -f "$DOCKERFILE_PATH" ]; then
+        print_error "Dockerfile不存在: $DOCKERFILE_PATH"
         exit 1
     fi
     
-    docker build -t $image_name . || {
+    docker build -f "$DOCKERFILE_PATH" -t "$IMAGE_TAG" . || {
         print_error "镜像构建失败"
         exit 1
     }
     
-    print_success "基础镜像构建完成: $image_name"
+    print_success "基础镜像构建完成: $IMAGE_TAG"
 }
 
 # 获取用户输入
@@ -396,7 +433,7 @@ create_container() {
     # 添加容器名和镜像
     docker_cmd="$docker_cmd --name $CONTAINER_NAME"
     docker_cmd="$docker_cmd --hostname $CONTAINER_NAME"
-    docker_cmd="$docker_cmd cuda-env:12.8"
+    docker_cmd="$docker_cmd $IMAGE_TAG"
     
     # 执行创建命令
     print_info "执行: $docker_cmd"
@@ -489,6 +526,9 @@ main() {
     # 检查环境
     check_docker
     check_nvidia_docker
+    
+    # 选择Ubuntu版本
+    select_ubuntu_version
     
     # 加载基础工作目录配置
     load_base_workspace
