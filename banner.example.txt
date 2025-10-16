@@ -18,6 +18,6 @@
 
 - 用户名: ${CONTAINER_USERNAME}
 - SSH端口: ${CONTAINER_SSH_PORT}
-- Code-server地址: http://${CONTAINER_HOST_IP}:${CONTAINER_CODESERVER_PORT}
-- Syncthing地址: http://${CONTAINER_HOST_IP}:${CONTAINER_CODESERVER_PORT}/proxy/${CONTAINER_SYNCTHING_PORT}/
+- Code-server地址: http://{服务器ip}:${CONTAINER_CODESERVER_PORT}
+- Syncthing地址: http://{服务器ip}:${CONTAINER_CODESERVER_PORT}/proxy/${CONTAINER_SYNCTHING_PORT}/
 -----------------------------

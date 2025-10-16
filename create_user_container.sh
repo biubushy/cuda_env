@@ -376,14 +376,11 @@ create_container() {
     docker_cmd="$docker_cmd -v $(pwd)/banner.txt:/etc/banner.txt:ro"
     
     # 添加环境变量
-    # 获取宿主机IP
-    HOST_IP=$(hostname -I | awk '{print $1}')
     docker_cmd="$docker_cmd -e CODESERVER_PASSWORD='$CODESERVER_PASSWORD'"
     docker_cmd="$docker_cmd -e CONTAINER_USERNAME='$USERNAME'"
     docker_cmd="$docker_cmd -e CONTAINER_SSH_PORT='$SSH_PORT'"
     docker_cmd="$docker_cmd -e CONTAINER_CODESERVER_PORT='$CODESERVER_PORT'"
     docker_cmd="$docker_cmd -e CONTAINER_SYNCTHING_PORT='8384'"
-    docker_cmd="$docker_cmd -e CONTAINER_HOST_IP='$HOST_IP'"
     
     # 添加代理环境变量
     if [ "$USE_PROXY" = "true" ]; then

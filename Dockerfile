@@ -139,7 +139,6 @@ echo "CONTAINER_USERNAME=${CONTAINER_USERNAME}" > /etc/container-info.env\n\
 echo "CONTAINER_SSH_PORT=${CONTAINER_SSH_PORT}" >> /etc/container-info.env\n\
 echo "CONTAINER_CODESERVER_PORT=${CONTAINER_CODESERVER_PORT}" >> /etc/container-info.env\n\
 echo "CONTAINER_SYNCTHING_PORT=${CONTAINER_SYNCTHING_PORT}" >> /etc/container-info.env\n\
-echo "CONTAINER_HOST_IP=${CONTAINER_HOST_IP}" >> /etc/container-info.env\n\
 chmod 644 /etc/container-info.env\n\
 \n\
 # 配置代理（如果启用）\n\

@@ -180,14 +180,11 @@ create_single_container() {
     docker_cmd="$docker_cmd -v $(pwd)/banner.txt:/etc/banner.txt:ro"
     
     # 环境变量
-    # 获取宿主机IP
-    local host_ip=$(hostname -I | awk '{print $1}')
     docker_cmd="$docker_cmd -e CODESERVER_PASSWORD='$codeserver_password'"
     docker_cmd="$docker_cmd -e CONTAINER_USERNAME='$username'"
     docker_cmd="$docker_cmd -e CONTAINER_SSH_PORT='$ssh_port'"
     docker_cmd="$docker_cmd -e CONTAINER_CODESERVER_PORT='$codeserver_port'"
     docker_cmd="$docker_cmd -e CONTAINER_SYNCTHING_PORT='8384'"
-    docker_cmd="$docker_cmd -e CONTAINER_HOST_IP='$host_ip'"
     
     # 代理配置
     if [ -n "$proxy_host" ] && [ -n "$proxy_port" ]; then
