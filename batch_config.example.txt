@@ -1,19 +1,20 @@
 # CUDA容器批量创建配置文件
-# 格式：用户名|root密码|codeserver密码|GPU|CPU|内存|SSH端口|Code-server端口|工作目录|代理地址|代理端口
+# 格式：用户名|root密码|codeserver密码|GPU|CPU|内存|共享内存|SSH端口|Code-server端口|工作目录|代理地址|代理端口
 # 说明：
 #   - 用#开头的行是注释
 #   - 空行会被忽略
 #   - GPU可以是：all, 0, 1, 0,1 等
 #   - CPU为0表示不限制
 #   - 内存为空表示不限制，否则如：16g
+#   - 共享内存为空表示使用默认16g，否则如：8g
 #   - 端口为0表示自动分配
 #   - 工作目录为空表示自动创建
 #   - 代理地址为空表示不使用代理，如：192.168.1.100
 #   - 代理端口：如 7890
 
 # 示例用户（不使用代理）
-alice|password123|password123|0|4|16g|22001|8080|||
-bob|password456|password456|1|4|16g|22002|8081|||
+alice|password123|password123|0|4|16g|8g|22001|8080|||
+bob|password456|password456|1|4|16g|8g|22002|8081|||
 
 # 示例用户（使用代理）
-charlie|password789|password789|2,3|8|32g|22003|8082|/data/charlie|192.168.1.100|7890
+charlie|password789|password789|2,3|8|32g|16g|22003|8082|/data/charlie|192.168.1.100|7890

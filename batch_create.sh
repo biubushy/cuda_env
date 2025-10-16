@@ -28,24 +28,25 @@ print_error() {
 create_sample_config() {
     cat > batch_config.example.txt << 'EOF'
 # CUDA容器批量创建配置文件
-# 格式：用户名|root密码|codeserver密码|GPU|CPU|内存|SSH端口|Code-server端口|工作目录|代理地址|代理端口
+# 格式：用户名|root密码|codeserver密码|GPU|CPU|内存|共享内存|SSH端口|Code-server端口|工作目录|代理地址|代理端口
 # 说明：
 #   - 用#开头的行是注释
 #   - 空行会被忽略
 #   - GPU可以是：all, 0, 1, 0,1 等
 #   - CPU为0表示不限制
 #   - 内存为空表示不限制，否则如：16g
+#   - 共享内存为空表示使用默认16g，否则如：8g
 #   - 端口为0表示自动分配
 #   - 工作目录为空表示自动创建
 #   - 代理地址为空表示不使用代理，如：192.168.1.100
 #   - 代理端口：如 7890
 
 # 示例用户（不使用代理）
-alice|password123|password123|0|4|16g|22001|8080|||
-bob|password456|password456|1|4|16g|22002|8081|||
+alice|password123|password123|0|4|16g|8g|22001|8080|||
+bob|password456|password456|1|4|16g|8g|22002|8081|||
 
 # 示例用户（使用代理）
-charlie|password789|password789|2,3|8|32g|22003|8082|/data/charlie|192.168.1.100|7890
+charlie|password789|password789|2,3|8|32g|16g|22003|8082|/data/charlie|192.168.1.100|7890
 EOF
     
     print_success "示例配置文件已创建: batch_config.example.txt"
@@ -135,11 +136,12 @@ create_single_container() {
     local gpu_ids=$4
     local cpu_limit=$5
     local memory_limit=$6
-    local ssh_port=$7
-    local codeserver_port=$8
-    local workspace=$9
-    local proxy_host=${10}
-    local proxy_port=${11}
+    local shm_size=$7
+    local ssh_port=$8
+    local codeserver_port=$9
+    local workspace=${10}
+    local proxy_host=${11}
+    local proxy_port=${12}
     
     local container_name="cuda-${username}"
     
@@ -173,6 +175,11 @@ create_single_container() {
         return 1
     }
     print_info "工作目录: $workspace"
+    
+    # 设置共享内存默认值
+    if [ -z "$shm_size" ]; then
+        shm_size="16g"
+    fi
     
     # 自动分配端口
     if [ "$ssh_port" = "0" ]; then
@@ -208,6 +215,9 @@ create_single_container() {
     if [ -n "$memory_limit" ]; then
         docker_cmd="$docker_cmd --memory=$memory_limit"
     fi
+    
+    # 共享内存
+    docker_cmd="$docker_cmd --shm-size=$shm_size"
     
     # 端口
     docker_cmd="$docker_cmd -p $ssh_port:22 -p $codeserver_port:8080"
@@ -279,6 +289,7 @@ Code-server:
   GPU: $gpu_ids
   CPU: $([ "$cpu_limit" = "0" ] && echo "无限制" || echo "${cpu_limit}核")
   内存: $([ -z "$memory_limit" ] && echo "无限制" || echo "$memory_limit")
+  共享内存: $shm_size
 
 工作目录: $workspace
 EOF
@@ -303,7 +314,7 @@ batch_create() {
     local failed=0
     
     # 读取配置文件
-    while IFS='|' read -r username root_password codeserver_password gpu cpu memory ssh_port codeserver_port workspace proxy_host proxy_port; do
+    while IFS='|' read -r username root_password codeserver_password gpu cpu memory shm_size ssh_port codeserver_port workspace proxy_host proxy_port; do
         # 跳过注释和空行
         [[ "$username" =~ ^#.*$ ]] && continue
         [[ -z "$username" ]] && continue
@@ -316,7 +327,7 @@ batch_create() {
         echo "========================================="
         
         if create_single_container "$username" "$root_password" "$codeserver_password" \
-            "$gpu" "$cpu" "$memory" "$ssh_port" "$codeserver_port" "$workspace" "$proxy_host" "$proxy_port"; then
+            "$gpu" "$cpu" "$memory" "$shm_size" "$ssh_port" "$codeserver_port" "$workspace" "$proxy_host" "$proxy_port"; then
             ((success++))
         else
             ((failed++))

@@ -221,6 +221,12 @@ get_user_input() {
         MEMORY_LIMIT=""
     fi
     
+    # 共享内存大小
+    read -p "请输入共享内存大小（如8g，默认16g）: " SHM_SIZE
+    if [ -z "$SHM_SIZE" ]; then
+        SHM_SIZE="16g"
+    fi
+    
     # SSH端口
     while true; do
         read -p "请输入SSH端口（默认自动分配从22001开始）: " SSH_PORT
@@ -367,6 +373,7 @@ get_user_input() {
     echo "GPU资源:          $GPU_IDS"
     echo "CPU限制:          $([ "$CPU_LIMIT" = "0" ] && echo "无限制" || echo "${CPU_LIMIT}核")"
     echo "内存限制:         $([ -z "$MEMORY_LIMIT" ] && echo "无限制" || echo "$MEMORY_LIMIT")"
+    echo "共享内存:         $SHM_SIZE"
     echo "SSH端口:          $SSH_PORT"
     echo "Code-server端口:  $CODESERVER_PORT"
     echo "工作目录:         $HOST_WORKSPACE"
@@ -404,6 +411,9 @@ create_container() {
     if [ -n "$MEMORY_LIMIT" ]; then
         docker_cmd="$docker_cmd --memory=$MEMORY_LIMIT"
     fi
+    
+    # 添加共享内存大小
+    docker_cmd="$docker_cmd --shm-size=$SHM_SIZE"
     
     # 添加端口映射
     docker_cmd="$docker_cmd -p $SSH_PORT:22 -p $CODESERVER_PORT:8080"
@@ -507,6 +517,7 @@ Code-server:
   GPU: $GPU_IDS
   CPU: $([ "$CPU_LIMIT" = "0" ] && echo "无限制" || echo "${CPU_LIMIT}核")
   内存: $([ -z "$MEMORY_LIMIT" ] && echo "无限制" || echo "$MEMORY_LIMIT")
+  共享内存: $SHM_SIZE
 
 工作目录: $HOST_WORKSPACE
 EOF
